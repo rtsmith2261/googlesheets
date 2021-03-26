@@ -1,0 +1,93 @@
+function autoDecide() 
+{
+  //Declare spreadsheet variable and starting row/
+  var ss = SpreadsheetApp.getActive();
+  var sheet = ss.getSheets()[0];
+  var curRow = 3;
+
+  //Set to calculate until
+  while (curRow != sheet.getMaxRows())
+  {
+    //Setup variables to iterate row by row.
+    var rangeStr = "F"+curRow+":"+"K"+curRow;
+    var range = sheet.getRange(rangeStr);
+    var finishedCalculating = false;
+
+    //Set active range as the current row.
+    sheet.setActiveRange(range)
+
+
+    while (!finishedCalculating)
+    {
+      //Setup holders to count # of Ys and Ns per row.
+      var yCount = 0;
+      var nCount = 0;
+      var other = 0;
+      //Creates a 2D array of the row values.
+      var array = range.getDisplayValues();
+      Logger.log(array);
+      //Iterate through every item in the array checking for Y or N
+      for (var i = 0; i < 5; i = i + 1)
+      {
+        if (array[0][i] == 'Y' || array[0][i] == 'y')
+        {
+          yCount = yCount + 1;
+
+        } else if (array[0][i] == 'N' || array[0][i] == 'n'  ) {
+
+          nCount = nCount + 1;
+
+        } else {
+          other = other + 1;
+        }
+      }
+
+      finishedCalculating = true;
+    }
+
+    //Format decision column.
+    if (yCount > 2 || yCount == 3)
+    {
+      sheet.getRange(curRow,11).setBackground("green");
+      sheet.getRange(curRow,12).setBackground("green");
+      sheet.getRange(curRow,11).setValue("");
+      sheet.getRange(curRow,12).setValue(yCount);
+      sheet.getRange(curRow,12).setFontColor("black");
+      sheet.getRange(curRow,1).setBackground("green");
+      sheet.getRange(curRow,1).setFontColor("black");
+      Logger.log("--------------------------");
+      Logger.log(curRow+": Green");
+      Logger.log("Y: "+yCount+" n: "+nCount+" O: "+ other);
+      Logger.log("--------------------------");
+      
+    } else if (nCount >= 3) {
+
+      sheet.getRange(curRow,11).setBackground("red");
+      sheet.getRange(curRow,12).setBackground("red");
+      sheet.getRange(curRow,11).setValue("");
+      sheet.getRange(curRow,12).setValue(nCount);
+      sheet.getRange(curRow,12).setFontColor("white");
+      sheet.getRange(curRow,1).setBackground("red");
+      sheet.getRange(curRow,1).setFontColor("white");
+      Logger.log("--------------------------");
+      Logger.log(curRow+": Red");
+      Logger.log("Y: "+yCount+" n: "+nCount+" O: "+ other);
+      Logger.log("--------------------------");
+
+      
+    } else {
+
+      sheet.getRange(curRow,11).setBackground("white");
+      sheet.getRange(curRow,1).setFontColor("black");
+      Logger.log("--------------------------");
+      Logger.log(curRow+": Null");
+      Logger.log("Y: "+yCount+" n: "+nCount+" O: "+ other);
+      Logger.log("--------------------------");
+
+    }
+   
+    //Advance to next row.
+    
+    curRow++;
+  }
+}
