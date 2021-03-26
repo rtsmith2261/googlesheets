@@ -1,2 +1,2 @@
 # googlesheets
-This is a dumb for all my Google Sheets projects from Google Apps Script.
+This is a dump for all my Google Sheets projects from Google Apps Script.
